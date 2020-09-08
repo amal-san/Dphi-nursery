@@ -1,0 +1,91 @@
+
+.main-card {
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    text-align:left;
+    box-shadow: 4px 6px 6px 0px #b9b9b9;
+    border-radius: 5px;
+    margin:1em;
+    display: inline-block;
+
+}
+
+.card > div {
+    padding:1px 10px 10px 10px;
+    
+}
+
+.card > div > p {
+    margin: 0;
+    color: black;
+    padding: 1px;
+    font-size: 12px;
+
+}
+
+.card > div > h3 {
+    margin:0;
+    font-size:14px;
+}
+
+
+.card > img {
+    width:200px;
+    height: 200px;
+}
+
+.card-button {
+    display: flex;
+    margin-top: 5px;
+    justify-content: space-between;
+}
+
+.card-button > a {
+    padding: 5px 8px;
+    background: wheat;
+    margin: 2px;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor :pointer;
+    box-shadow: 3px 3px 1px 0px #c3bcbc;
+}
+
+
+.header {
+    background:wheat;
+    height: 60px;
+}
+
+.header > h4 {
+    margin:0;
+    padding:20px;
+}
+
+.menu {
+    height: 50px;
+    margin: 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu > p {
+    margin: 0;
+    text-align: initial;
+    padding: 8px;
+    font-weight: bold;
+}
+
+.menu > div > button {
+    margin: 5px;
+    padding: 5px;
+    margin: 5px;
+    padding: 5px;
+    outline: none;
+    border: none;
+    background: wheat;
+    padding: 8px;
+    box-shadow: 3px 3px 1px 0px #c3bcbc;
+}
