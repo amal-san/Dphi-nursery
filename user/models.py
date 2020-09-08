@@ -14,3 +14,9 @@ class User(AbstractUser):
         return self.username
 
 
+class Record(models.Model):
+    order_user = models.ForeignKey(User,on_delete=models.CASCADE)
+    order_plant = models.ForeignKey(Plant,on_delete=models.CASCADE)
+
+    pass
+
