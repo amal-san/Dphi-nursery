@@ -2,6 +2,7 @@ import React , { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, gql,useMutation } from '@apollo/client';
 import './home.css';
 import { useHistory } from 'react-router-dom';
+import cogoToast from 'cogo-toast';
 
 
 
@@ -41,7 +42,8 @@ const RECORDS = gql`
             <div className='card-record'>
                 <div>
                     <p> Ordered by user : <span>{orderUser.username}</span></p>
-                    <p>Plant Name : <span> {orderPlant.price}</span></p>
+                    <p>Plant Name : <span> {orderPlant.name}</span></p>
+                    <p>Plant price : <span>{orderPlant.price}</span></p>
                     <p> Plant Description <span>{orderPlant.description}</span></p>
                     <p> Created At : <span>{createdAt}</span></p>             
                 </div>
@@ -137,6 +139,12 @@ query userDetails($username:String!){
 const Main = () => {
 
     const {loading, error , data } = useQuery(USER_LIST);
+    const [cart , isCart ] = useState(false);
+
+    const addCart = (e) => {
+        console.log(e.target.id)
+    }
+
     
     if(loading) return <p> Loading ..</p>
     if(error) return <p> Error ..</p>
@@ -149,7 +157,7 @@ const Main = () => {
                      <p>price : {price}</p>
                      <p>description : {description}</p>
                      <div className='card-button'>
-                     <a> <span>🛒</span>Cart</a> <a> <span>↗️ </span>Buy now</a>
+                     <a id ={id} onClick = {addCart}> <span>🛒</span>Cart</a> <a> <span>↗️ </span>Buy now</a>
                      </div>
                     </div>
              </div>          
@@ -170,27 +178,60 @@ mutation tokenAuth($username:String!,$password:String!){
 
 
 
+const USER_CREATE = gql`
+mutation createUser($username:String!,$password:String!) {
+    createUser(input: {
+      username:$username
+      password:$password
+    }) {
+      ok
+    }
+  }
+`
+
+
 const Login = () => {
-    let username,password;
+
+    let username,password,newUsername,newPassword,newPassword1;
     const history = useHistory();
     const [mutate] = useMutation(USER_CHECK)
+    const [createUser] = useMutation(USER_CREATE)
     const [data, setData] = useState()
     const [error, setError] = useState()
+    const [signup , isSignup ] = useState(true);
+
     const handleClick = async ({variables}) => {
     try {
         const data  = await mutate({variables})
         localStorage.setItem('token', data.data.tokenAuth.token);
         localStorage.setItem('username',variables.username) 
         setData(data);
-        window.location.reload(); 
+        cogoToast.success("Logging in...");
+        setTimeout(function () {window.location.reload()},100);
 
 
         
     }
     catch (e) {
         setError(e);
+     }
     }
-    }
+    const signUp = async ({variables}) => {
+        try {
+            const data  = await createUser({variables})
+            cogoToast.success(
+            <div>
+                <b>Account created ;)</b>
+                <div>Now login....</div>
+            </div>);
+            setTimeout(function () {window.location.reload()},100);
+            
+        }
+        catch (e) {
+            isSignup(false)
+         }
+        }
+
     
     useEffect(() => {
         
@@ -205,7 +246,7 @@ const Login = () => {
            <form className ="login-form">   <div>
             <h3 > Login </h3>
             <p className='error-login'>{error ? " * Enter valid credentails":" "}</p>
-            <label for = "name">Username: </label>
+            <label>Username: </label>
             <input
             ref={node => {
                 username = node;
@@ -238,19 +279,45 @@ const Login = () => {
                 <div className="sign-form">
                 <h3 style={{marginTop:'1rem',marginBottom:'1rem',margin:'0'}}> Sign Up</h3>
                 <div>
+                <p className='error-login'>{signUp ? " ":" * Can't create account"}</p>
                 <label>Username</label>    
-                    <input style={{marginLeft:'65px'}}></input>
+                    <input
+                    ref={node => {
+                        newUsername = node;
+                    }}
+                     style={{marginLeft:'65px'}}>
+                
+                     </input>
                 </div>
                 <div>
                 <label>Password</label>
-                    <input style={{marginLeft:'70px'}}></input>
+                    <input 
+                    style={{marginLeft:'70px'}}
+                    ref={node => {
+                        newPassword1 = node;
+                    }}
+                    type="password"
+                    >
+                    </input>
                 </div>
                 <div>
                 <label>Confirm Password </label>
-                    <input></input>
+                    <input
+                    ref={node => {
+                        newPassword = node;
+                    }}
+                    ></input>
                 </div>
-                <div><button className="btn" type="submit">Sign Up</button></div>
+                <div><button className="btn" type="submit" onClick = {e => {
+                e.preventDefault();
+                signUp({variables: {username:newUsername.value,password:newPassword.value}});
+                newUsername.value = '';
+                newPassword.value = '';
+                newPassword1.value = '';
+                }}
+                >Sign Up</button>
                 </div>
+            </div>
             
             </form>
         </div>
@@ -311,9 +378,9 @@ const Home = () => {
     },[]);
 
 
-    if(loading || !isloggedIn) return <p> Loading ..</p>
+    if (loading) return <p> Loading ..</p>
     if (isloggedIn) return  <MainList/>
-    if (isloggedIn == false) return  <Login/>
+    if (!isloggedIn) return  <Login/>
 
     
 
