@@ -64,6 +64,28 @@ export const Record = () => {
 }
 
 
+const MainList = () => {
+
+    const { data: dataR, error: errorR, loading: loadingR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
+    let manager;
+    if(dataR){
+
+        manager = dataR.userDetails.isManager;
+    } 
+    return (
+        <>
+        < Header isManager={manager ? true: false} heading=" Shop Plants"></Header>
+        <div className="main-card"> 
+        <Main/>
+        </div>
+        </>
+
+    )
+
+
+}
+
+
 
 
 
@@ -82,8 +104,8 @@ const Header = ({ isManager ,heading }) => {
         <section className='menu'>
             <div> <p style={{fontSize:'20px'}}>{heading}</p>  </div>
             {isManager ? <div>
-                <button > Add Plant</button>
-                <button onClick={() => history.push('/records')} > Records </button>
+                <button > ➕ Add Plant</button>
+                <button onClick={() => history.push('/records')} > 📚 Records </button>
             </div> : "  " }
 
         </section>
@@ -115,35 +137,22 @@ query userDetails($username:String!){
 const Main = () => {
 
     const {loading, error , data } = useQuery(USER_LIST);
-    const { data: dataR, error: errorR, loading: loadingR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
-
-    if (data) console.log(data);
-
-    let manager;
-    if(dataR){
-
-        manager = dataR.userDetails.isManager;
-    } 
-
     
     if(loading) return <p> Loading ..</p>
     if(error) return <p> Error ..</p>
     return data.plants.map(({ id , name, price, description, photo  }) => (
     <>
-      <Header isManager = {manager ? true: false} heading = "🌿  Shop Plants"/>
-            <div className="main-card" key={id}> 
-                <div className='card'>
-                    <img src="https://picsum.photos/id/1/200/300" ></img>
-                        <div>
-                        <h3>{name}</h3> 
-                        <p>price : {price}</p>
-                        <p>description : {description}</p>
-                        <div className='card-button'>
-                        <a> <span>🛒</span>Cart</a> <a> <span>↗️ </span>Buy now</a>
-                        </div>
+        <div className='card'  key={id}>
+                <img src="https://picsum.photos/id/1/200/300" ></img>
+                    <div>
+                     <h3>{name}</h3> 
+                     <p>price : {price}</p>
+                     <p>description : {description}</p>
+                     <div className='card-button'>
+                     <a> <span>🛒</span>Cart</a> <a> <span>↗️ </span>Buy now</a>
+                     </div>
                     </div>
-                </div>          
-            </div>
+             </div>          
         </>
     ));
     
@@ -265,14 +274,15 @@ mutation verifyToken($token:String!){
 
 const Home = () => {
 
-    const [isloggedIn , setLoggedIn ] = useState(false);
-    const [loading, setLoading ] = useState(true);
+    const [isloggedIn , setLoggedIn ] = useState(null);
+    const [loading, setLoading ] = useState();
     const [verifyToken] = useMutation(VERIFY_TOKEN)
     const [token , setToken ] = useState(localStorage.getItem('token') ? localStorage.getItem('token'):null)
 
 
 
     const tokenVerify = async() => {
+        setLoading(true)
         try {
             setToken(localStorage.getItem('token'))
             const data = await verifyToken({variables:{token:token}})
@@ -301,10 +311,9 @@ const Home = () => {
     },[]);
 
 
-    if(loading) return <p> Loading ..</p>
-    if (isloggedIn) return <Main/>
-    if(!isloggedIn) 
-    return <Login/>
+    if(loading || !isloggedIn) return <p> Loading ..</p>
+    if (isloggedIn) return  <MainList/>
+    if (isloggedIn == false) return  <Login/>
 
     
 
