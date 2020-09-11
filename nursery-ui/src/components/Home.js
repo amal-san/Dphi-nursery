@@ -649,13 +649,11 @@ const Home = () => {
         try {
             setToken(localStorage.getItem('token'))
             const data = await verifyToken({variables:{token:token}})
-            console.log("userLoggedIn")
             setLoggedIn(true);
     
         }
         catch (e){
             setLoggedIn(false);
-            console.log("Invalid token")
         }
     
     
@@ -666,7 +664,6 @@ const Home = () => {
             tokenVerify();
         }
         else {
-            console.log("user not logged in")
             setLoggedIn(false);
         }
         setLoading(false);
