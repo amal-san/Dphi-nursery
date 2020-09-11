@@ -43,7 +43,7 @@ const RECORDS = gql`
                 <div>
                     <p> Ordered by user : <span>{orderUser.username}</span></p>
                     <p>Plant Name : <span> {orderPlant.name}</span></p>
-                    <p>Plant price : <span>{orderPlant.price}</span></p>
+                    <p>Plant price : <span>{orderPlant.price}</span> ₹</p>
                     <p> Plant Description <span>{orderPlant.description}</span></p>
                     <p> Created At : <span>{createdAt}</span></p>             
                 </div>
@@ -59,7 +59,7 @@ export const Record = () => {
     return (
         <>
         <Header isManager={false} heading = " 📚 Records"/>
-        <RecordDetail key={true}/>
+        <RecordDetail/>
         </>
     )
 
@@ -430,7 +430,7 @@ const Main = ({plants,method}) => {
                 <img src="https://picsum.photos/id/1/200/300" ></img>
                     <div>
                      <h3>{name}</h3> 
-                     <p>price : {price}</p>
+                     <p>price : {price} ₹ </p>
                      <p>description : {description}</p>
                      <div className='card-button'>
                      {method === "cart" && method !== "buy" && method !=="other"? 
