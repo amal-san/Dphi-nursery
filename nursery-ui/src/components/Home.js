@@ -601,6 +601,7 @@ const Login = () => {
                         newPassword = node;
                     }}
                     style={{marginLeft:'11px'}}
+                    type="password"
                     ></input>
                 </div>
                 <div><button className="btns" type="submit" onClick = {e => {
