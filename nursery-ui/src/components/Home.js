@@ -3,14 +3,10 @@ import { useQuery, useLazyQuery, gql,useMutation } from '@apollo/client';
 import './home.css';
 import { useHistory } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
-import Button from 'react-bootstrap/Button';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-
-
-
-
+import { Menu, Item, Separator, Submenu, MenuProvider } from 'react-contexify';
+import 'react-contexify/dist/ReactContexify.min.css';
 
 
 const RECORDS = gql`
@@ -108,7 +104,7 @@ query otherPlants($username:String!){
 
 const MainList = () => {
 
-    const { data: dataR, error: errorR, loading: loadingR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
+    const { data: dataR, error: errorR, loading: loadingR ,refetch:refetchR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
     const { data, error , loading, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
     const [plants , setPlants ] = useState([]);
     const [method , setMethod ] = useState("cart");
@@ -120,6 +116,7 @@ const MainList = () => {
     } 
     const click =  (e) => {
         refetch();
+        refetchR();
         if(e.target.value == "InCart"){
             console.log(dataR.userDetails.cart)
             setPlants(dataR.userDetails.cart)
@@ -142,8 +139,8 @@ const MainList = () => {
     }
     useEffect(() => {
     
-        if(dataR){
-            setPlants(dataR.userDetails.cart)
+        if(data){
+            setPlants(data.otherPlants)
         }
 
     },[dataR])
@@ -154,9 +151,9 @@ const MainList = () => {
             <div className="sort-plants">
               <div>
                 <select name="methods" id="plants" onClick={click}>
-                    <option value="InCart">In Cart</option>
-                    <option value="Buy"> Buyed </option>
-                    <option value="other"> Other</option>
+                    <option value="other">Plants</option>
+                    <option value="Buy"> Plants Buyed </option>
+                    <option value="InCart"> Plants in Cart</option>
                 </select>        
                 </div>
             </div> 
@@ -267,6 +264,26 @@ const AddPlantModal = (props) => {
     );
   }
 
+  const LogoutMenu = () => {
+
+    const history = useHistory();
+	const onClick = () => {
+
+		localStorage.removeItem('username')
+        localStorage.removeItem('token')
+        setTimeout(function () {window.location.reload()},100);
+
+	}
+
+	return (
+		<Menu id='menu_id' >
+        <Item onClick={(e) => {history.push('/records/')}}>Records</Item>
+        <Item onClick={onClick}>Logout</Item>
+      </Menu>
+
+	)
+}
+
 
 
 const Header = ({ isManager ,heading }) => {
@@ -280,7 +297,13 @@ const Header = ({ isManager ,heading }) => {
         <>
         <div className='header'>
              <h4>Dphi Nursery</h4>
-             <p>{username}</p>
+             <MenuProvider id="menu_id" event="onClick" style={{margin:"1rem"}}>
+             <p>
+              {username}
+             <LogoutMenu>
+              </LogoutMenu>
+            </p>
+            </MenuProvider>
         </div>
         <section className='menu'>
             <div> <p style={{fontSize:'20px'}}>{heading}</p>  </div>
@@ -526,6 +549,7 @@ const Login = () => {
             }}
             name= "username"
             type="text"
+            style={{marginLeft:'13px'}}
             />
             </div>
             <div>
@@ -536,9 +560,10 @@ const Login = () => {
             }}
             name="password"
             type="password"
+            style={{marginLeft:'16px'}}
             />
             </div>
-            <div><button className="btn"  onClick = {e => {
+            <div><button className="btns"  onClick = {e => {
                 e.preventDefault();
                 handleClick({variables: {username:username.value,password:password.value}});
                 username.value = '';
@@ -579,9 +604,10 @@ const Login = () => {
                     ref={node => {
                         newPassword = node;
                     }}
+                    style={{marginLeft:'11px'}}
                     ></input>
                 </div>
-                <div><button className="btn" type="submit" onClick = {e => {
+                <div><button className="btns" type="submit" onClick = {e => {
                 e.preventDefault();
                 signUp({variables: {username:newUsername.value,password:newPassword.value}});
                 newUsername.value = '';
@@ -652,8 +678,8 @@ const Home = () => {
 
 
     if (loading) return <p> Loading ..</p>
-    if (isloggedIn) return  <MainList/>
-    if (!isloggedIn) return  <Login/>
+    if (token) return  <MainList/>
+    return  <Login/>
 
     
 
