@@ -33,7 +33,7 @@
 
 
 .card > img {
-    width:200px;
+    width: 100%;
     height: 200px;
 }
 
@@ -41,11 +41,13 @@
     display: flex;
     margin-top: 5px;
     justify-content: space-between;
+    flex-direction: column;
+    text-align: center;
 }
 
 .card-button > a {
     padding: 5px 8px;
-    background: wheat;
+    background:#ffae1a;
     margin: 2px;
     border-radius: 3px;
     font-weight: bold;
@@ -185,4 +187,43 @@
     font-size: 13px;
     font-weight: bolder;
 
+}
+
+.sort-plants {
+    width: 100%;
+    height: 30px;
+    background: wheat;
+    margin: 0rem 1rem 0rem 1rem;
+    display: flex;
+    border: 3px solid orange;
+    justify-content: flex-end;
+    
+}
+
+.sort-plants > div > select {
+    background: wheat;
+    border: none;
+}
+
+.add-plant > div {
+    margin: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+.add-plant > div >input , textarea{
+    padding: 1px;
+    border: none;
+    border-bottom: 2px solid orange;
+    background: wheat;
+    width:60%;
+}
+
+.add-plant > div > textarea {
+    height: 98px;
+}
+
+.submit-addplant {
+    box-shadow: 4px 6px 6px 0px #b9b9b9!important;
+    padding: 5px 8px!important;
+    width:auto!important;
 }

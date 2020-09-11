@@ -3,6 +3,12 @@ import { useQuery, useLazyQuery, gql,useMutation } from '@apollo/client';
 import './home.css';
 import { useHistory } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
+import Button from 'react-bootstrap/Button';
+import Modal from "react-bootstrap/Modal";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+
+
 
 
 
@@ -65,20 +71,96 @@ export const Record = () => {
 
 }
 
+const USER_DETAILS =gql`
+
+query userDetails($username:String!){
+    userDetails(username:$username){
+      isManager
+      orderPlaced {
+        id
+        name
+        price
+        description
+        photo
+      }
+      cart {
+        id
+        name
+        price
+        description
+        photo
+      }
+    }
+  }`;
+
+const OTHER_PLANTS = gql`
+query otherPlants($username:String!){
+    otherPlants(username:$username){
+        id
+        name
+        price
+        description
+        photo
+    }
+  }
+`;
+
 
 const MainList = () => {
 
     const { data: dataR, error: errorR, loading: loadingR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
+    const { data, error , loading, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
+    const [plants , setPlants ] = useState([]);
+    const [method , setMethod ] = useState("cart");
     let manager;
     if(dataR){
 
         manager = dataR.userDetails.isManager;
+        
     } 
+    const click =  (e) => {
+        refetch();
+        if(e.target.value == "InCart"){
+            console.log(dataR.userDetails.cart)
+            setPlants(dataR.userDetails.cart)
+            setMethod("cart")
+        }
+        else if(e.target.value == "Buy" ){
+            setPlants(dataR.userDetails.orderPlaced)
+            setMethod("buy")
+
+        }
+        else if(e.target.value == "other"){
+            setPlants(data.otherPlants);
+            setMethod("other")
+
+        }
+        else {
+            setPlants([]);
+        }
+         
+    }
+    useEffect(() => {
+    
+        if(dataR){
+            setPlants(dataR.userDetails.cart)
+        }
+
+    },[dataR])
     return (
         <>
-        < Header isManager={manager ? true: false} heading=" Shop Plants"></Header>
-        <div className="main-card"> 
-        <Main/>
+        <Header isManager={manager ? true: false} heading="🌿 Shop Plants"></Header>
+        <div className="main-card" key={1}>
+            <div className="sort-plants">
+              <div>
+                <select name="methods" id="plants" onClick={click}>
+                    <option value="InCart">In Cart</option>
+                    <option value="Buy"> Buyed </option>
+                    <option value="other"> Other</option>
+                </select>        
+                </div>
+            </div> 
+         <Main plants = {plants} method = {method}/>
         </div>
         </>
 
@@ -88,11 +170,108 @@ const MainList = () => {
 }
 
 
+const CREATE_PLANT = gql`
+mutation createPlant($name:String!,$price:Int!,$description:String!) {
+    createPlant(name:$name,price:$price,description:$description){
+      ok
+    }
+  }
+`;
+
+
+const AddPlantModal = (props) => {
+
+    let name,price,description;
+
+    const [createplant] = useMutation(CREATE_PLANT);
+    const addPlant = async ({variables}) => {
+
+        try {
+            const data  = await createplant({variables})
+            cogoToast.success("Plant created successfully.");
+            props.onHide();
+
+            
+        }
+        catch (e) {
+            cogoToast.warn("can't create plant");
+            props.onHide();
+
+         }
+        setTimeout(function () {window.location.reload()},200);
+    }
+   
+
+
+    return (
+      <Modal
+        {...props}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+           Add Plant
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+         <div className='add-plant'>
+             <div>
+                 <label> Name: </label>
+            <input  
+                ref={node => {
+                name = node;
+                }} 
+                name='text'
+                required
+                >
+            </input>
+             </div>
+             <div>
+                 <label> Price: </label>
+                 <input  
+                ref={node => {
+                price = node;
+                }} 
+                name='text'
+                type='number'
+                required
+                >
+            </input>
+             </div>
+             <div>
+                 <label>Description: </label>
+                 <textarea
+                 required  
+                ref={node => {
+                description = node;
+                }} 
+                >
+            </textarea>
+             </div>
+             <div>
+                 <input className="submit-addplant" type="submit"
+                 onClick = {e => {
+                    e.preventDefault();
+                    addPlant({variables: {name:name.value,price:price.value,description:description.value}});
+                    name.value = '';
+                    description.value = '';
+                    price.value ='';}}
+                ></input>
+             </div>
+         </div>
+        </Modal.Body>
+        
+      </Modal>
+    );
+  }
 
 
 
 const Header = ({ isManager ,heading }) => {
 
+    const [modalShow, setModalShow] = React.useState(false);
     const history = useHistory();
     const username = localStorage.getItem('token') ? localStorage.getItem('username') : "  ";
 
@@ -106,7 +285,11 @@ const Header = ({ isManager ,heading }) => {
         <section className='menu'>
             <div> <p style={{fontSize:'20px'}}>{heading}</p>  </div>
             {isManager ? <div>
-                <button > ➕ Add Plant</button>
+                <button onClick={() => setModalShow(true)} > ➕ Add Plant</button>
+                <AddPlantModal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                />
                 <button onClick={() => history.push('/records')} > 📚 Records </button>
             </div> : "  " }
 
@@ -114,6 +297,9 @@ const Header = ({ isManager ,heading }) => {
         </>
     );
 }
+
+
+
 
 
 const USER_LIST = gql`
@@ -128,27 +314,97 @@ query {
 }
 `;
 
-const USER_DETAILS =gql`
-
-query userDetails($username:String!){
-    userDetails(username:$username){
-      isManager
+const ADD_TO_CART = gql`
+mutation addToCart($username:String!,$plantId:Int!) {
+    addToCart(username:$username,plantId:$plantId){
+      ok
     }
-  }`;
+  }
+`;
 
-const Main = () => {
+const ORDER_PLANT =gql`
+mutation orderPlant($username:String!,$plantId:Int!) {
+    orderPlant(username:$username,plantId:$plantId){
+      ok
+    }
+  }
+`;
+
+const REMOVE_FROM_CART = gql
+`mutation removeCart($username:String!,$plantId:Int!) {
+    removeCart(username:$username,plantId:$plantId){
+      ok
+    }
+  }
+`;
+
+const REMOVE_FROM_PLANT =gql`
+mutation removePlant($username:String!,$plantId:Int!) {
+    removePlant(username:$username,plantId:$plantId){
+      ok
+    }
+  }
+`;
+
+
+
+const Main = ({plants,method}) => {
 
     const {loading, error , data } = useQuery(USER_LIST);
-    const [cart , isCart ] = useState(false);
+    const [cart] = useMutation(ADD_TO_CART);
+    const [ cartRemove ] = useMutation(REMOVE_FROM_CART);
+    const [ orderRemove ] = useMutation(REMOVE_FROM_PLANT);
+    const [order] = useMutation(ORDER_PLANT);
 
-    const addCart = (e) => {
-        console.log(e.target.id)
+    let username = localStorage.getItem('username');
+
+    const addCart = async (e) => {
+
+        try {
+            const data  = await cart({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
+            cogoToast.success("Plant added to cart");
+        }
+        catch (e) {
+            cogoToast.warn("can't add to cart");
+         }
+    }
+    const buy = async(e) => {
+        try {
+            const data  = await order({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
+            cogoToast.success("Plant buyed");
+        }
+        catch (e) {
+            cogoToast.warn("can't buy plant");
+         }
+
+    }
+    const cartremove = async(e) => {
+        try {
+            const data  = await cartRemove({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
+            cogoToast.success("Plant removed from cart");
+        }
+        catch (e) {
+            cogoToast.warn("can't remove plant");
+         }
     }
 
+    const orderremove = async(e) => {
+        try {
+            const data  = await orderRemove({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
+            cogoToast.success("Plant removed from buying..");
+        }
+        catch (e) {
+            cogoToast.warn("can't remove plant from buying..");
+        }
+    }
+
+    useEffect(() => {
+
+    },[plants,method])
     
     if(loading) return <p> Loading ..</p>
     if(error) return <p> Error ..</p>
-    return data.plants.map(({ id , name, price, description, photo  }) => (
+    return plants.map(({ id , name, price, description, photo  }) => (
     <>
         <div className='card'  key={id}>
                 <img src="https://picsum.photos/id/1/200/300" ></img>
@@ -157,13 +413,30 @@ const Main = () => {
                      <p>price : {price}</p>
                      <p>description : {description}</p>
                      <div className='card-button'>
-                     <a id ={id} onClick = {addCart}> <span>🛒</span>Cart</a> <a> <span>↗️ </span>Buy now</a>
+                     {method === "cart" && method !== "buy" && method !=="other"? 
+                     <>
+                     <a id ={id} style={{background:"#a4a19a"}} onClick = {(e) => {cartremove(e)}} >🛒Remove from Cart </a> 
+                     <a id ={id} onClick = {(e) => {buy(e)}}>↗️ Buy </a> 
+                     </>
+                     : " " }
+                     {method !== "cart" && method == "buy" && method !=="other"? 
+                     <>
+                     <a id ={id} onClick = {(e) => {addCart(e)}}  >🛒Add to Cart </a> 
+                     <a id ={id} onClick = {(e) => {orderremove(e)}}  style={{background:"#a4a19a"}} >↗️ Remove from Buyed </a> 
+                     </>
+                     : " " }
+                     {method !== "cart" && method !== "buy" && method ==="other"? 
+                     <>
+                     <a id ={id} onClick = {(e) => {addCart(e)}}  >🛒Add to Cart </a> 
+                     <a id ={id} onClick = {(e) => {buy(e)}}>↗️ Buy </a> 
+                     </>
+                     : " " }
+                     
                      </div>
                     </div>
              </div>          
         </>
     ));
-    
 }
 
 
@@ -256,7 +529,7 @@ const Login = () => {
             />
             </div>
             <div>
-                <label for="password"> Password:  </label>
+                <label> Password:  </label>
             <input
             ref={node => {
                 password = node;

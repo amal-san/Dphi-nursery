@@ -64,16 +64,17 @@ class CreateUser(graphene.Mutation):
 class AddtoCart(graphene.Mutation):
 
     class Arguments:
-        input = AddCartInput(required=True)
+        username = graphene.String()
+        plantId = graphene.Int()
 
     ok = graphene.Boolean()
     User = graphene.Field(UserType)
 
     @staticmethod
-    def mutate(root,info, input):
+    def mutate(root,info, username,plantId):
         ok = True
-        plant = Plant.objects.get(pk=input.plant_id)
-        user = User.objects.get(username=input.username)
+        plant = Plant.objects.get(pk=plantId)
+        user = User.objects.get(username=username)
         user.cart.add(plant)
         return AddtoCart(ok=ok, User=user)
 
@@ -82,24 +83,63 @@ class AddtoCart(graphene.Mutation):
 class OrderPlant(graphene.Mutation):
 
     class Arguments:
-        input = AddCartInput(required=True)
+        username = graphene.String()
+        plantId = graphene.Int()
 
     ok = graphene.Boolean()
     User = graphene.Field(UserType)
 
     @staticmethod
-    def mutate(root,info, input):
+    def mutate(root,info, username,plantId):
         ok = True
-        plant = Plant.objects.get(pk=input.plant_id)
-        user = User.objects.get(username=input.username)
+        plant = Plant.objects.get(pk=plantId)
+        user = User.objects.get(username=username)
         user.order_placed.add(plant)
+        user.cart.remove(plant)
         newRecord = Record(order_user=user,order_plant=plant)
         newRecord.save()
         return OrderPlant(ok=ok, User=user)
 
+class RemoveFromCart(graphene.Mutation):
+
+    class Arguments:
+        username = graphene.String()
+        plantId = graphene.Int()
+
+    ok = graphene.Boolean()
+    User = graphene.Field(UserType)
+
+    @staticmethod
+    def mutate(root,info, username,plantId):
+        ok = True
+        plant = Plant.objects.get(pk=plantId)
+        user = User.objects.get(username=username)
+        user.cart.remove(plant)
+        return RemoveFromCart(ok=ok, User=user)
+
+class RemovePlantOrder(graphene.Mutation):
+
+    class Arguments:
+        username = graphene.String()
+        plantId = graphene.Int()
+
+    ok = graphene.Boolean()
+    User = graphene.Field(UserType)
+
+    @staticmethod
+    def mutate(root,info, username,plantId):
+        ok = True
+        plant = Plant.objects.get(pk=plantId)
+        user = User.objects.get(username=username)
+        user.order_placed.remove(plant)
+        newRecord = Record.objects.get(order_user=user,order_plant=plant)
+        newRecord.delete()
+        return RemovePlantOrder(ok=ok, User=user)
 
 class Mutation(graphene.ObjectType):
     add_to_cart = AddtoCart.Field()
     create_user = CreateUser.Field()
     order_plant = OrderPlant.Field()
+    remove_cart = RemoveFromCart.Field()
+    remove_plant = RemovePlantOrder.Field()
     

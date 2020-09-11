@@ -1,6 +1,8 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
 from .models import Plant
+from user.models import User
+from django.db.models import Q
 
 
 class PlantType(DjangoObjectType):
@@ -10,7 +12,8 @@ class PlantType(DjangoObjectType):
 
 
 class Query(ObjectType):
-    plant = graphene.Field(PlantType,id=graphene.Int())
+    otherPlants = graphene.List(PlantType,username=graphene.String())
+    plant = graphene.List(PlantType, username=graphene.String())
     plants = graphene.List(PlantType)
     
 
@@ -21,9 +24,16 @@ class Query(ObjectType):
             return Plant.objects.get(pk=id)
 
         return None
+
     def resolve_plants(self,info, **kwargs):
         return Plant.objects.all()
 
+    def resolve_otherPlants(self, info, **kwargs ):
+        username = kwargs.get('username')
+        user = User.objects.get(username=username)
+
+        if username is not None:
+            return Plant.objects.filter(~Q(order_placed=user.id) & ~Q(plants_in_cart=user.id))
 
 
 class PlantInput(graphene.InputObjectType):
@@ -33,15 +43,17 @@ class PlantInput(graphene.InputObjectType):
     
 class CreatePlant(graphene.Mutation):
     class Arguments:
-        input = PlantInput(required=True)
+        name = graphene.String()
+        price = graphene.Int()
+        description = graphene.String()
 
     ok = graphene.Boolean()
     plant = graphene.Field(PlantType)
 
     @staticmethod
-    def mutate(root, info, input=None):
+    def mutate(root, info, name,price,description):
         ok = True
-        plant_instance = Plant(name=input.name,price=input.price,description=input.description)
+        plant_instance = Plant(name=name,price=price,description=description)
         plant_instance.save()
         return CreatePlant(ok=ok, plant=plant_instance)
 
