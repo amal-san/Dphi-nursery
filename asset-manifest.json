@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Dphi-nursery/static/css/main.39dbe122.chunk.css",
-    "main.js": "/Dphi-nursery/static/js/main.13811784.chunk.js",
-    "main.js.map": "/Dphi-nursery/static/js/main.13811784.chunk.js.map",
+    "main.js": "/Dphi-nursery/static/js/main.84f01577.chunk.js",
+    "main.js.map": "/Dphi-nursery/static/js/main.84f01577.chunk.js.map",
     "runtime-main.js": "/Dphi-nursery/static/js/runtime-main.7a19e289.js",
     "runtime-main.js.map": "/Dphi-nursery/static/js/runtime-main.7a19e289.js.map",
     "static/css/2.47b6aeee.chunk.css": "/Dphi-nursery/static/css/2.47b6aeee.chunk.css",
     "static/js/2.f7fe0bf3.chunk.js": "/Dphi-nursery/static/js/2.f7fe0bf3.chunk.js",
     "static/js/2.f7fe0bf3.chunk.js.map": "/Dphi-nursery/static/js/2.f7fe0bf3.chunk.js.map",
     "index.html": "/Dphi-nursery/index.html",
-    "precache-manifest.35f4ce2e026d1602c4c22580ea5aca71.js": "/Dphi-nursery/precache-manifest.35f4ce2e026d1602c4c22580ea5aca71.js",
+    "precache-manifest.3349b7a4b2f9bedc4456a0e0c842aaaa.js": "/Dphi-nursery/precache-manifest.3349b7a4b2f9bedc4456a0e0c842aaaa.js",
     "service-worker.js": "/Dphi-nursery/service-worker.js",
     "static/css/2.47b6aeee.chunk.css.map": "/Dphi-nursery/static/css/2.47b6aeee.chunk.css.map",
     "static/css/main.39dbe122.chunk.css.map": "/Dphi-nursery/static/css/main.39dbe122.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.47b6aeee.chunk.css",
     "static/js/2.f7fe0bf3.chunk.js",
     "static/css/main.39dbe122.chunk.css",
-    "static/js/main.13811784.chunk.js"
+    "static/js/main.84f01577.chunk.js"
   ]
 }
