@@ -28,7 +28,7 @@ SECRET_KEY = '_1zr^(t4)70+fe30es8++(76e(8@nsb6a^aewfzpwha%d+g9(c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dphi-nursery.herokuapp.com']
 
 
 # Application definition
