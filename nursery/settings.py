@@ -152,7 +152,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'https://dphi-nursery.herokuapp.com',
+    'https://amal-san.github.io/Dphi-nursery/',
 )
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
