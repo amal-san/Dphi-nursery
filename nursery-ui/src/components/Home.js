@@ -274,7 +274,6 @@ const AddPlantModal = (props) => {
 
 	return (
 		<Menu id='menu_id' >
-        <Item onClick={(e) => {history.push('/records/')}}>Records</Item>
         <Item onClick={onClick}>Logout</Item>
       </Menu>
 
@@ -310,6 +309,7 @@ const Header = ({ isManager ,heading }) => {
                     show={modalShow}
                     onHide={() => setModalShow(false)}
                 />
+                <button onClick={() => history.push('/records')} > 📚 Records </button>
             </div> : "  " }
 
         </section>
@@ -421,7 +421,7 @@ const Main = ({plants,method}) => {
 
     },[plants,method])
     
-    if(loading ) return <p> Loading .. </p>
+    if(loading) return <p> Loading .. </p>
     if(error) return <p> Error ..</p>
     return plants.map(({ id , name, price, description, photo  }) => (
     <>
