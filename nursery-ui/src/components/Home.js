@@ -105,7 +105,7 @@ const MainList = () => {
     const { data: dataR, refetch:refetchR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
     const { data, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
     const [plants , setPlants ] = useState([]);
-    const [method , setMethod ] = useState("cart");
+    const [method , setMethod ] = useState("other");
     let manager;
     if(dataR){
 
