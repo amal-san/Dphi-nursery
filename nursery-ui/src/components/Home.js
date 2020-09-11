@@ -430,8 +430,8 @@ const Main = ({plants,method}) => {
                 <img src="https://picsum.photos/id/1/200/300" ></img>
                     <div>
                      <h3>{name}</h3> 
-                     <p>price : {price} ₹ </p>
-                     <p>description : {description}</p>
+                     <p>Price : {price} ₹ </p>
+                     <p>Description : {description}</p>
                      <div className='card-button'>
                      {method === "cart" && method !== "buy" && method !=="other"? 
                      <>
