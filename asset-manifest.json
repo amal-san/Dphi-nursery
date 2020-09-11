@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/Dphi-nursery/static/css/main.4926e440.chunk.css",
-    "main.js": "/Dphi-nursery/static/js/main.1ca9da58.chunk.js",
-    "main.js.map": "/Dphi-nursery/static/js/main.1ca9da58.chunk.js.map",
+    "main.css": "/Dphi-nursery/static/css/main.39dbe122.chunk.css",
+    "main.js": "/Dphi-nursery/static/js/main.a96dc237.chunk.js",
+    "main.js.map": "/Dphi-nursery/static/js/main.a96dc237.chunk.js.map",
     "runtime-main.js": "/Dphi-nursery/static/js/runtime-main.7a19e289.js",
     "runtime-main.js.map": "/Dphi-nursery/static/js/runtime-main.7a19e289.js.map",
     "static/css/2.47b6aeee.chunk.css": "/Dphi-nursery/static/css/2.47b6aeee.chunk.css",
     "static/js/2.f7fe0bf3.chunk.js": "/Dphi-nursery/static/js/2.f7fe0bf3.chunk.js",
     "static/js/2.f7fe0bf3.chunk.js.map": "/Dphi-nursery/static/js/2.f7fe0bf3.chunk.js.map",
     "index.html": "/Dphi-nursery/index.html",
-    "precache-manifest.7e01cf330be9332993cb04af26b22283.js": "/Dphi-nursery/precache-manifest.7e01cf330be9332993cb04af26b22283.js",
+    "precache-manifest.9145dbdb8d4b8e636718b0b8b288adaf.js": "/Dphi-nursery/precache-manifest.9145dbdb8d4b8e636718b0b8b288adaf.js",
     "service-worker.js": "/Dphi-nursery/service-worker.js",
     "static/css/2.47b6aeee.chunk.css.map": "/Dphi-nursery/static/css/2.47b6aeee.chunk.css.map",
-    "static/css/main.4926e440.chunk.css.map": "/Dphi-nursery/static/css/main.4926e440.chunk.css.map",
+    "static/css/main.39dbe122.chunk.css.map": "/Dphi-nursery/static/css/main.39dbe122.chunk.css.map",
     "static/js/2.f7fe0bf3.chunk.js.LICENSE.txt": "/Dphi-nursery/static/js/2.f7fe0bf3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.7a19e289.js",
     "static/css/2.47b6aeee.chunk.css",
     "static/js/2.f7fe0bf3.chunk.js",
-    "static/css/main.4926e440.chunk.css",
-    "static/js/main.1ca9da58.chunk.js"
+    "static/css/main.39dbe122.chunk.css",
+    "static/js/main.a96dc237.chunk.js"
   ]
 }
