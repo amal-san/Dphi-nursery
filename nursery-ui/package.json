@@ -1,6 +1,7 @@
 {
   "name": "nursery-ui",
   "version": "0.1.0",
+  "homepage": "https://amal-san.github.io/Dphi-nursery/",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.1.5",
@@ -23,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"

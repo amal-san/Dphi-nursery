@@ -3,8 +3,7 @@ import './App.css';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import Home from './components/Home';
-import {HashRouter as Router,Route,
-  Redirect,Switch} from 'react-router-dom';
+import {HashRouter as Router,Route} from 'react-router-dom';
 import { Record } from './components/Home';
 
 

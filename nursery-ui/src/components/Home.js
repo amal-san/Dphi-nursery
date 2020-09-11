@@ -1,11 +1,11 @@
 import React , { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery, gql,useMutation } from '@apollo/client';
+import { useQuery,gql,useMutation } from '@apollo/client';
 import './home.css';
 import { useHistory } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Menu, Item, Separator, Submenu, MenuProvider } from 'react-contexify';
+import { Menu, Item, MenuProvider } from 'react-contexify';
 import 'react-contexify/dist/ReactContexify.min.css';
 
 
@@ -34,8 +34,6 @@ const RECORDS = gql`
 
     const {loading, error, data } = useQuery(RECORDS);
 
-    if(data) console.log(data);
-
     if (loading) return <p> Loading </p>
     if (error) return <p> error </p>
     return data.record.map(({id , orderPlant, orderUser,createdAt}) => (
@@ -61,7 +59,7 @@ export const Record = () => {
     return (
         <>
         <Header isManager={false} heading = " 📚 Records"/>
-        <RecordDetail/>
+        <RecordDetail key={true}/>
         </>
     )
 
@@ -104,8 +102,8 @@ query otherPlants($username:String!){
 
 const MainList = () => {
 
-    const { data: dataR, error: errorR, loading: loadingR ,refetch:refetchR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
-    const { data, error , loading, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
+    const { data: dataR, refetch:refetchR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
+    const { data, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
     const [plants , setPlants ] = useState([]);
     const [method , setMethod ] = useState("cart");
     let manager;
@@ -117,17 +115,16 @@ const MainList = () => {
     const click =  (e) => {
         refetch();
         refetchR();
-        if(e.target.value == "InCart"){
-            console.log(dataR.userDetails.cart)
+        if(e.target.value === "InCart"){
             setPlants(dataR.userDetails.cart)
             setMethod("cart")
         }
-        else if(e.target.value == "Buy" ){
+        else if(e.target.value === "Buy" ){
             setPlants(dataR.userDetails.orderPlaced)
             setMethod("buy")
 
         }
-        else if(e.target.value == "other"){
+        else if(e.target.value === "other"){
             setPlants(data.otherPlants);
             setMethod("other")
 
@@ -147,7 +144,7 @@ const MainList = () => {
     return (
         <>
         <Header isManager={manager ? true: false} heading="🌿 Shop Plants"></Header>
-        <div className="main-card" key={1}>
+        <div className="main-card" key={true}>
             <div className="sort-plants">
               <div>
                 <select name="methods" id="plants" onClick={click}>
@@ -442,7 +439,7 @@ const Main = ({plants,method}) => {
                      <a id ={id} onClick = {(e) => {buy(e)}}>↗️ Buy </a> 
                      </>
                      : " " }
-                     {method !== "cart" && method == "buy" && method !=="other"? 
+                     {method !== "cart" && method === "buy" && method !=="other"? 
                      <>
                      <a id ={id} onClick = {(e) => {addCart(e)}}  >🛒Add to Cart </a> 
                      <a id ={id} onClick = {(e) => {orderremove(e)}}  style={{background:"#a4a19a"}} >↗️ Remove from Buyed </a> 
@@ -678,7 +675,7 @@ const Home = () => {
 
 
     if (loading) return <p> Loading ..</p>
-    if (token) return  <MainList/>
+    if (token) return  <MainList key={1}/>
     return  <Login/>
 
     
