@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Dphi-nursery/precache-manifest.30776362d32c2f9dbc2d04d314b84e64.js"
+  "/Dphi-nursery/precache-manifest.aedfab4ece5ff72198c66280844cf6ee.js"
 );
 
 self.addEventListener('message', (event) => {
