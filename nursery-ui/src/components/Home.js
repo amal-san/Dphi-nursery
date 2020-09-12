@@ -102,7 +102,7 @@ query otherPlants($username:String!){
 
 const MainList = () => {
 
-    const { data: dataR, refetch:refetchR } = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
+    const { data: dataR, refetch:refetchR} = useQuery(USER_DETAILS,{variables:{username:localStorage.getItem('username')}});
     const { data, refetch} = useQuery(OTHER_PLANTS,{variables:{username:localStorage.getItem('username')}})
     const [plants , setPlants ] = useState([]);
     const [method , setMethod ] = useState("other");
@@ -122,6 +122,7 @@ const MainList = () => {
             setPlants(dataR.userDetails.orderPlaced)
             setMethod("buy")
             refetchR();
+
 
         }
         else if(e.target.value === "other"){
@@ -148,7 +149,7 @@ const MainList = () => {
         <div className="main-card" key={true}>
             <div className="sort-plants">
               <div>
-                <select name="methods" id="plants" onClick={click}>
+                <select name="methods" id="plants" onClick={click} onPointerEnter={click} onPointerOut={click}>
                     <option value="other">Plants</option>
                     <option value="Buy"> Plants Buyed </option>
                     <option value="InCart"> Plants in Cart</option>
@@ -434,7 +435,7 @@ const Main = ({plants,method}) => {
     return plants.map(({ id , name, price, description, photo  }) => (
     <>
         <div className='card'  key={id}>
-                <img src="https://picsum.photos/id/1/200/300" ></img>
+                <img src="https://source.unsplash.com/300x400/?plants"></img>
                     <div>
                      <h3>{name}</h3> 
                      <p>Price : {price} ₹ </p>
