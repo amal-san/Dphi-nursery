@@ -8,7 +8,7 @@ import { Record } from './components/Home';
 
 
 const client = new ApolloClient({
-  uri: 'https://dphi-nursery.herokuapp.com/graphql/',
+  uri: 'https://dphi-nursery.herokuapp.com/graphql/', 
   cache: new InMemoryCache()
 });
 
