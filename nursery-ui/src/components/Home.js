@@ -542,6 +542,18 @@ const Login = () => {
         <>
         <Header isManager={false} heading=" "/>
         <div>
+            <div className="info">
+            <p>
+                <i>Manager</i> <br></br>
+                <span> <i>username: manager </i> </span> <br></br>
+                <span> <i>password: manager </i> </span> <br></br>
+                </p>
+                <p>
+                <i>testuser</i> <br></br>
+                <span> <i>username: test </i> </span> <br></br>
+                <span> <i>password: test </i> </span> <br></br>
+                </p>
+            </div>
         <div className="login-sign">
         <div>
            <form className ="login-form">   <div>
