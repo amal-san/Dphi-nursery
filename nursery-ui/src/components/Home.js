@@ -113,20 +113,21 @@ const MainList = () => {
         
     } 
     const click =  (e) => {
-        refetch();
-        refetchR();
         if(e.target.value === "InCart"){
             setPlants(dataR.userDetails.cart)
             setMethod("cart")
+            refetchR();
         }
         else if(e.target.value === "Buy" ){
             setPlants(dataR.userDetails.orderPlaced)
             setMethod("buy")
+            refetchR();
 
         }
         else if(e.target.value === "other"){
             setPlants(data.otherPlants);
             setMethod("other")
+            refetch();
 
         }
         else {
@@ -135,12 +136,12 @@ const MainList = () => {
          
     }
     useEffect(() => {
-    
         if(data){
             setPlants(data.otherPlants)
         }
 
-    },[dataR])
+
+    },[data])
     return (
         <>
         <Header isManager={manager ? true: false} heading="🌿 Shop Plants"></Header>
@@ -369,48 +370,56 @@ mutation removePlant($username:String!,$plantId:Int!) {
 
 const Main = ({plants,method}) => {
 
-    const {loading, error , data } = useQuery(USER_LIST);
     const [cart] = useMutation(ADD_TO_CART);
     const [ cartRemove ] = useMutation(REMOVE_FROM_CART);
     const [ orderRemove ] = useMutation(REMOVE_FROM_PLANT);
     const [order] = useMutation(ORDER_PLANT);
 
+  
     let username = localStorage.getItem('username');
 
-    const addCart = async (e) => {
+    const addCart = async (e,method) => {
 
         try {
             const data  = await cart({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
             cogoToast.success("Plant added to cart");
+
         }
         catch (e) {
             cogoToast.warn("can't add to cart");
+
          }
     }
-    const buy = async(e) => {
+    const buy = async(e,method) => {
+
         try {
             const data  = await order({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
             cogoToast.success("Plant buyed");
+
         }
         catch (e) {
             cogoToast.warn("can't buy plant");
          }
 
     }
-    const cartremove = async(e) => {
+    const cartremove = async(e,method) => {
+
         try {
             const data  = await cartRemove({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
             cogoToast.success("Plant removed from cart");
+
         }
         catch (e) {
             cogoToast.warn("can't remove plant");
          }
     }
 
-    const orderremove = async(e) => {
+    const orderremove = async(e,method) => {
+
         try {
             const data  = await orderRemove({variables:{username:localStorage.getItem('username'),plantId:e.target.id}})
             cogoToast.success("Plant removed from buying..");
+
         }
         catch (e) {
             cogoToast.warn("can't remove plant from buying..");
@@ -418,11 +427,10 @@ const Main = ({plants,method}) => {
     }
 
     useEffect(() => {
-
-    },[plants,method])
+            
+    },[plants])
     
-    if(loading) return <p> Loading .. </p>
-    if(error) return <p> Error ..</p>
+    
     return plants.map(({ id , name, price, description, photo  }) => (
     <>
         <div className='card'  key={id}>
@@ -434,20 +442,20 @@ const Main = ({plants,method}) => {
                      <div className='card-button'>
                      {method === "cart" && method !== "buy" && method !=="other"? 
                      <>
-                     <a id ={id} style={{background:"#a4a19a"}} onClick = {(e) => {cartremove(e)}} >🛒Remove from Cart </a> 
-                     <a id ={id} onClick = {(e) => {buy(e)}}>↗️ Buy </a> 
+                     <a id ={id} style={{background:"#a4a19a"}} onClick = {(e) => {cartremove(e,method)}} >🛒Remove from Cart </a> 
+                     <a id ={id} onClick = {(e) => {buy(e,method)}}>↗️ Buy </a> 
                      </>
                      : " " }
                      {method !== "cart" && method === "buy" && method !=="other"? 
                      <>
-                     <a id ={id} onClick = {(e) => {addCart(e)}}  >🛒Add to Cart </a> 
-                     <a id ={id} onClick = {(e) => {orderremove(e)}}  style={{background:"#a4a19a"}} >↗️ Remove from Buyed </a> 
+                     <a id ={id} onClick = {(e) => {addCart(e,method)}}  >🛒Add to Cart </a> 
+                     <a id ={id} onClick = {(e) => {orderremove(e,method)}}  style={{background:"#a4a19a"}} >↗️ Remove from Buyed </a> 
                      </>
                      : " " }
                      {method !== "cart" && method !== "buy" && method ==="other"? 
                      <>
-                     <a id ={id} onClick = {(e) => {addCart(e)}}  >🛒Add to Cart </a> 
-                     <a id ={id} onClick = {(e) => {buy(e)}}>↗️ Buy </a> 
+                     <a id ={id} onClick = {(e) => {addCart(e,method)}}  >🛒Add to Cart </a> 
+                     <a id ={id} onClick = {(e) => {buy(e,method)}}>↗️ Buy </a> 
                      </>
                      : " " }
                      
