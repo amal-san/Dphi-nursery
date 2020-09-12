@@ -22,7 +22,7 @@ function App() {
       </div>
     </ApolloProvider>
     </Router>
-  );
+  ); 
 }
 
 export default App;
