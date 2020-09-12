@@ -546,7 +546,7 @@ const Login = () => {
             <p>
                 <i>Manager</i> <br></br>
                 <span> <i>username: manager </i> </span> <br></br>
-                <span> <i>password: manager </i> </span> <br></br>
+                <span> <i>password: 1234 </i> </span> <br></br>
                 </p>
                 <p>
                 <i>testuser</i> <br></br>
